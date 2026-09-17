@@ -2,6 +2,7 @@ import math
 import os
 import datetime
 import requests
+import time
 
 from conftest import valid_request
 
@@ -414,3 +415,77 @@ def test_request_with_invalid_start_time_format_produces_appropriate_response(ap
     data = response.json()
 
     assert data["detail"] == f"Invalid start time format {invalid_request['start_time']}"
+
+############################### API RESPONSE TIME ###############################################
+print("RESPONSE TIME TEST")
+def test_api_response_time(api_url, api_headers, valid_request):
+    print("Testing that the API response time is less than 60 seconds")
+
+    url = f"{api_url}/forecast/gd_lic"
+
+    request_start_time = time.perf_counter()
+
+    response = requests.post(url,
+                             json=valid_request,
+                             headers=api_headers,
+                             timeout=60)
+
+    elapsed_time = time.perf_counter() - request_start_time
+
+    print(f"API response time: {elapsed_time:.2f} seconds")
+
+    assert response.status_code == 200
+
+    assert elapsed_time < 60
+
+############################### EDGE CASES ###############################################
+print("EDGE CASE TESTS")
+
+# The following tests will be modified when I update the API to produce a specific error for each of these cases
+def test_request_with_insufficient_historical_data_returns_server_error(api_url, api_headers, valid_request):
+    print("Testing that a valid request for which not sufficient historical data is available in InfluxDB returns server error")
+
+    url = f"{api_url}/forecast/gd_lic"
+
+    invalid_request = valid_request.copy()
+    invalid_request["start_time"] = "2026-08-16T10:00:00+00:00"  # I know there is not sufficient historical data for this time
+
+    response = requests.post(url,
+                             json=invalid_request,
+                             headers=api_headers,
+                             timeout=60)
+
+    assert response.status_code == 500
+
+
+def test_request_with_insufficient_weather_forecasts_returns_server_error(api_url, api_headers, valid_request):
+    print("Testing that a valid request for which not sufficient weather forecasts are available in MySQL DB returns server error")
+
+    url = f"{api_url}/forecast/gd_lic"
+
+    invalid_request = valid_request.copy()
+    invalid_request["start_time"] = "2025-06-24T10:00:00+00:00"  # I know there is not sufficient weather forecasts for this time
+
+    response = requests.post(url,
+                             json=invalid_request,
+                             headers=api_headers,
+                             timeout=60)
+
+    assert response.status_code == 500
+
+def test_future_start_time(api_url, api_headers, valid_request):
+    print("Testing that the API returns a server error for a given start time in the future")
+
+    url = f"{api_url}/forecast/gd_lic"
+
+    invalid_request = valid_request.copy()
+    invalid_request["start_time"] = "2028-06-10T00:00:00+00:00"
+
+    response = requests.post(url,
+                             json=invalid_request,
+                             headers=api_headers,
+                             timeout=60)
+
+    assert response.status_code == 500
+
+
