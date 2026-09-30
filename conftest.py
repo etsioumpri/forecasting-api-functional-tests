@@ -5,7 +5,7 @@ import pytest
 def api_url():
 
     return os.getenv("FORECASTING_API_URL",
-                    "https://localhost:8000")
+                    "http://127.0.0.1:8000")
 
 @pytest.fixture
 def api_headers():
@@ -18,11 +18,20 @@ def api_headers():
 
     return {"X-Api-Key": api_key}
 
+# for gd_lic
+# @pytest.fixture
+# def valid_request():
+#
+#     return {
+#         "meter": os.getenv("FORECASTING_API_METER"),
+#         "site": os.getenv("FORECASTING_API_SITE"),
+#         "start_time": os.getenv("FORECASTING_API_START_TIME"),
+#     }
+#for enbro
 @pytest.fixture
 def valid_request():
 
     return {
-        "meter": os.getenv("FORECASTING_API_METER"),
-        "site": os.getenv("FORECASTING_API_SITE"),
+        "location": os.getenv("FORECASTING_API_LOCATION"),
         "start_time": os.getenv("FORECASTING_API_START_TIME"),
     }
