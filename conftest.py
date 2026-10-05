@@ -8,6 +8,12 @@ def api_url():
                     "http://127.0.0.1:8000")
 
 @pytest.fixture
+def api_url_aic():
+
+    return os.getenv("FORECASTING_API_URL_AIC",
+                    "http://127.0.0.1:8000")
+
+@pytest.fixture
 def api_headers():
 
     api_key = os.getenv("FORECASTING_API_KEY")
@@ -18,9 +24,9 @@ def api_headers():
 
     return {"X-Api-Key": api_key}
 
-# for Swiss pilot
+# for Swiss pilot - GD/LC
 @pytest.fixture
-def valid_request():
+def valid_request_gd_lic():
 
     return {
         "meter": os.getenv("FORECASTING_API_METER"),
@@ -28,11 +34,22 @@ def valid_request():
         "start_time": os.getenv("FORECASTING_API_START_TIME"),
     }
 
-# #for enbro
-# @pytest.fixture
-# def valid_request():
-#
-#     return {
-#         "location": os.getenv("FORECASTING_API_LOCATION"),
-#         "start_time": os.getenv("FORECASTING_API_START_TIME"),
-#     }
+# for Swiss pilot - AIC
+@pytest.fixture
+def valid_request_aic():
+
+    return {
+        "meter": os.getenv("FORECASTING_API_METER_AIC"),
+        "site": os.getenv("FORECASTING_API_SITE_AIC"),
+        "start_time": os.getenv("FORECASTING_API_START_TIME"),
+    }
+
+
+#for enbro
+@pytest.fixture
+def valid_request_enbro():
+
+    return {
+        "location": os.getenv("FORECASTING_API_LOCATION"),
+        "start_time": os.getenv("FORECASTING_API_START_TIME"),
+    }
