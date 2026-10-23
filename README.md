@@ -83,4 +83,8 @@ This runs **all** the tests discovered under the `tests` directory. The paramete
 
 To run the tests for an individual API, run: 
 
-`pytest -v -s tests/test_forecasting_api_aic.py` , `pytest -v -s tests/test_forecasting_api_enbro.py` or `pytest -v -s tests/test_forecasting_api_gd_lic.py` 
+`pytest -v -s tests/test_forecasting_api_aic.py` , 
+
+`pytest -v -s tests/test_forecasting_api_enbro.py` or 
+
+`pytest -v -s tests/test_forecasting_api_gd_lic.py` 
